@@ -6,17 +6,26 @@ import { Button, Text, View } from 'react-native';
 import Sound from 'react-native-sound';
 import { downloadMP3 } from 'services/download-mp3';
 import { downloadLinks, SoundFileNames } from 'services/download.constants';
+import { getLocalData } from 'utils/local-storage';
 
 function HomePage() {
   const [downloadPath, setDownloadPath] = useState<string>('');
   const { loadingStatus, loaderFunction } = useLoader();
   console.log({ loadingStatus });
+  console.log({ downloadPath });
 
   const downloadSound = async () => {
+    const fileName = SoundFileNames.RAIN;
+    const filePathInLocalStorage = await getLocalData(fileName);
+    if (filePathInLocalStorage) {
+      setDownloadPath(filePathInLocalStorage);
+      return;
+    }
+
     const downloadPath = await loaderFunction({
       callbackFunction: downloadMP3,
       params: {
-        fileName: SoundFileNames.RAIN,
+        fileName,
         downloadLink: downloadLinks.rain,
       },
     });
