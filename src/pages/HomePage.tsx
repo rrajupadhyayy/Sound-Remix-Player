@@ -1,31 +1,26 @@
 import globalStyles from 'config/globalStyles';
 import { staticText } from 'config/staticText';
+import useLoader, { LoadingState } from 'hooks/useLoader';
 import React, { useState } from 'react';
 import { Button, Text, View } from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
 import Sound from 'react-native-sound';
-
-const downloadLink =
-  'https://cdn.freesound.org/sounds/507/507902-819d5219-fe2a-4b8c-91ce-c875c169bcfb?filename=507902__inuetc__heavy-rain-sound-inu-etc.mp3';
-const path = RNFetchBlob.fs.dirs.DocumentDir;
+import { downloadMP3 } from 'services/download-mp3';
+import { downloadLinks, SoundFileNames } from 'services/download.constants';
 
 function HomePage() {
   const [downloadPath, setDownloadPath] = useState<string>('');
-  const downloadSound = () => {
-    RNFetchBlob.config({
-      fileCache: true,
-      appendExt: 'mp3',
-      path: path + '/rain.mp3',
-    })
-      .fetch('GET', downloadLink, {
-        //some headers ..
-      })
-      .then((res) => {
-        console.log({ res });
-        setDownloadPath(res.path());
-        console.log('The file is save to ', res.path());
-      })
-      .catch((error) => console.log({ error }));
+  const { loadingStatus, loaderFunction } = useLoader();
+  console.log({ loadingStatus });
+
+  const downloadSound = async () => {
+    const downloadPath = await loaderFunction({
+      callbackFunction: downloadMP3,
+      params: {
+        fileName: SoundFileNames.RAIN,
+        downloadLink: downloadLinks.rain,
+      },
+    });
+    setDownloadPath(downloadPath);
   };
 
   const playSound = () => {
@@ -55,7 +50,11 @@ function HomePage() {
 
   return (
     <View style={[globalStyles.container, globalStyles.alignCenter]}>
-      <Text>{staticText.appName}</Text>
+      <Text>
+        {loadingStatus === LoadingState.LOADING
+          ? 'loading'
+          : staticText.appName}
+      </Text>
       <Button onPress={downloadSound} title={'download music'} />
       <Button onPress={playSound} title={'play music'} />
     </View>
