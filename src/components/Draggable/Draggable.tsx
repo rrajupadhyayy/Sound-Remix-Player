@@ -1,25 +1,25 @@
-/**
- *	* https://github.com/tongyy/react-native-draggable
- *
- */
-
 import { emptyFunction } from 'config/misc';
-import React, { useMemo, useCallback, useEffect, useRef } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+  Ref,
+  useState,
+} from 'react';
 import {
   View,
   PanResponder,
   Animated,
   Dimensions,
-  TouchableOpacity,
-  StyleSheet,
   GestureResponderEvent,
   PanResponderGestureState,
   StyleProp,
   NativeSyntheticEvent,
   NativeTouchEvent,
   ViewStyle,
+  Button,
 } from 'react-native';
-import styles from './Draggable.styles';
 
 function clamp(number: number, min: number, max: number) {
   return Math.max(min, Math.min(number, max));
@@ -29,17 +29,13 @@ interface IProps {
   children?: React.ReactNode;
   shouldReverse?: boolean;
   disabled?: boolean;
-  debug?: boolean;
   animatedViewProps?: object;
   touchableOpacityProps?: object;
   onDrag?: (
     e: GestureResponderEvent,
     gestureState: PanResponderGestureState,
   ) => void;
-  onDragRelease?: (
-    e: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => void;
+  onDragRelease?: (position: Object) => void;
   onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
   onReverse?: () => { x: number; y: number };
   x?: number;
@@ -55,7 +51,6 @@ export default function Draggable({
   children,
   shouldReverse = false,
   disabled = false,
-  debug = false,
   animatedViewProps,
   touchableOpacityProps,
   onDrag = emptyFunction,
@@ -77,6 +72,11 @@ export default function Draggable({
   const startBounds = useRef({ top: 0, bottom: 0, left: 0, right: 0 });
   // Whether we're currently dragging or not
   const isDragging = useRef(false);
+  const dragRef = useRef(new Animated.ValueXY());
+  
+  const showRefPosition = () => {
+    return pan.current.getLayout();
+  };
 
   const getBounds = useCallback(() => {
     const left = x! + offsetFromStart.current.x;
@@ -106,8 +106,10 @@ export default function Draggable({
   const onPanResponderRelease = useCallback(
     (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
       isDragging.current = false;
+      const position = showRefPosition();
+      console.log({ position });
       if (onDragRelease) {
-        onDragRelease(e, gestureState);
+        onDragRelease(position as Object);
         if (onRelease) {
           onRelease(e, true);
         }
@@ -121,17 +123,14 @@ export default function Draggable({
     [onDragRelease, shouldReverse, onRelease, reversePosition],
   );
 
-  const onPanResponderGrant = useCallback(
-    (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-      startBounds.current = getBounds();
-      isDragging.current = true;
-      if (!shouldReverse) {
-        pan.current.setOffset(offsetFromStart.current);
-        pan.current.setValue({ x: 0, y: 0 });
-      }
-    },
-    [getBounds, shouldReverse],
-  );
+  const onPanResponderGrant = useCallback(() => {
+    startBounds.current = getBounds();
+    isDragging.current = true;
+    if (!shouldReverse) {
+      pan.current.setOffset(offsetFromStart.current);
+      pan.current.setValue({ x: 0, y: 0 });
+    }
+  }, [getBounds, shouldReverse]);
 
   const handleOnDrag = useCallback(
     (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
@@ -218,33 +217,14 @@ export default function Draggable({
     };
   }, [children, x, y, z]);
 
-  const getDebugView = useCallback(() => {
-    const { width, height } = Dimensions.get('window');
-    const far = 9999;
-    const constrained = minX || maxX || minY || maxY;
-    if (!constrained) {
-      return null;
-    } // could show other debug info here
-    const left = minX || -far;
-    const right = maxX ? width - maxX : -far;
-    const top = minY || -far;
-    const bottom = maxY ? height - maxY : -far;
-    return (
-      <View
-        pointerEvents="box-none"
-        style={{ left, right, top, bottom, ...styles.debugView }}
-      />
-    );
-  }, [maxX, maxY, minX, minY]);
-
   return (
     <View pointerEvents="box-none" style={positionCss}>
-      {debug && getDebugView()}
       <Animated.View
         pointerEvents="box-none"
         {...animatedViewProps}
         {...panResponder.panHandlers}
         style={pan.current.getLayout()}
+        ref={dragRef}
       >
         <View
           {...touchableOpacityProps}

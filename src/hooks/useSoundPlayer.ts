@@ -41,6 +41,7 @@ export default function useSoundPlayer({
   if (sourcePath) {
     const whoosh = new Sound(sourcePath, '', (error) => {
       if (error) {
+        console.error({ error });
         return;
       }
     });

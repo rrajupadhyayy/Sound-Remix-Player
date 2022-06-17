@@ -2,7 +2,7 @@ import Draggable from 'components/Draggable/Draggable';
 import globalStyles from 'config/globalStyles';
 import React, { Fragment, useRef, useState } from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
-import { getScreenHeight } from 'utils/screen-size';
+import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 import styles from './SoundButton.styles';
 
 export const animationState = {
@@ -12,27 +12,31 @@ export const animationState = {
 
 function SoundButton() {
   const [isInDefaultPosition, setIsDefaultPosition] = useState<boolean>(true);
+  console.log(getScreenHeight(10), getScreenHeight(70));
 
-  return (
-    <View
-      style={[globalStyles.container, { opacity: 1 }]}
-      onLayout={(event) => {
-        const layout = event.nativeEvent.layout;
-        console.log('height:', { layout });
-        console.log('width:', layout.width);
-        console.log('x:', layout.x);
-        console.log('y:', layout.y);
-      }}
+  return isInDefaultPosition ? (
+    <TouchableOpacity
+      style={[
+        styles.absoluteButton,
+        globalStyles.alignCenter,
+        globalStyles.boxShadow,
+        styles.buttonContainer,
+      ]}
+      onPress={() => setIsDefaultPosition(!isInDefaultPosition)}
     >
+      <Text>test</Text>
+    </TouchableOpacity>
+  ) : (
+    <View style={[globalStyles.container]}>
       <Draggable
         x={75}
         minX={75}
         maxX={75}
-        y={isInDefaultPosition ? getScreenHeight(80) : getScreenHeight(70)}
+        y={isInDefaultPosition ? getScreenHeight(70) : getScreenHeight(60)}
         maxY={getScreenHeight(70)}
-        minY={getScreenHeight(20)}
+        minY={getScreenHeight(10)}
         disabled={isInDefaultPosition}
-        onDragRelease={(e) => console.log(e.nativeEvent.locationY)}
+        onDragRelease={(e) => console.log({ e })}
       >
         <TouchableOpacity
           style={[
