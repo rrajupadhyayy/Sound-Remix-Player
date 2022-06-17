@@ -1,61 +1,18 @@
 import globalStyles from 'config/globalStyles';
 import { staticText } from 'config/staticText';
 import useLoader, { LoadingState } from 'hooks/useLoader';
-import React, { useState } from 'react';
+import useSoundPlayer from 'hooks/useSoundPlayer';
+import React from 'react';
 import { Button, Text, View } from 'react-native';
-import Sound from 'react-native-sound';
-import { downloadMP3 } from 'services/download-mp3';
 import { downloadLinks, SoundFileNames } from 'services/download.constants';
-import { getLocalData } from 'utils/local-storage';
 
 function HomePage() {
-  const [downloadPath, setDownloadPath] = useState<string>('');
   const { loadingStatus, loaderFunction } = useLoader();
-  console.log({ loadingStatus });
-  console.log({ downloadPath });
-
-  const downloadSound = async () => {
-    const fileName = SoundFileNames.RAIN;
-    const filePathInLocalStorage = await getLocalData(fileName);
-    if (filePathInLocalStorage) {
-      setDownloadPath(filePathInLocalStorage);
-      return;
-    }
-
-    const downloadPath = await loaderFunction({
-      callbackFunction: downloadMP3,
-      params: {
-        fileName,
-        downloadLink: downloadLinks.rain,
-      },
-    });
-    setDownloadPath(downloadPath);
-  };
-
-  const playSound = () => {
-    var whoosh = new Sound(downloadPath, '', (error) => {
-      if (error) {
-        console.log('failed to load the sound', error);
-        return;
-      }
-      // loaded successfully
-      console.log(
-        'duration in seconds: ' +
-          whoosh.getDuration() +
-          'number of channels: ' +
-          whoosh.getNumberOfChannels(),
-      );
-
-      // Play the sound with an onEnd callback
-      whoosh.play((success) => {
-        if (success) {
-          console.log('successfully finished playing');
-        } else {
-          console.log('playback failed due to audio decoding errors');
-        }
-      });
-    });
-  };
+  const { playSound, stopSound, setSoundVolume } = useSoundPlayer({
+    fileName: SoundFileNames.RAIN,
+    downloadLink: downloadLinks.rain,
+    loaderFunction,
+  });
 
   return (
     <View style={[globalStyles.container, globalStyles.alignCenter]}>
@@ -64,8 +21,9 @@ function HomePage() {
           ? 'loading'
           : staticText.appName}
       </Text>
-      <Button onPress={downloadSound} title={'download music'} />
+      <Button onPress={stopSound} title={'stop music'} />
       <Button onPress={playSound} title={'play music'} />
+      <Button onPress={setSoundVolume} title={'change volume'} />
     </View>
   );
 }

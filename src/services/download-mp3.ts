@@ -1,3 +1,4 @@
+import genericError from 'utils/generic-error';
 import RNFetchBlob from 'rn-fetch-blob';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
 import {
@@ -30,6 +31,7 @@ export async function downloadMP3({
       return res.path();
     })
     .catch((_error) => {
+      genericError();
       return null;
     });
 }
