@@ -1,7 +1,6 @@
 import React from 'react';
-import Index from './src/index';
-function App() {
-  return <Index />;
-}
+import { HomePage } from './src/pages';
 
-export default App;
+export default function App() {
+  return <HomePage />;
+}
