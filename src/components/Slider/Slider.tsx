@@ -7,6 +7,7 @@ import {
   PanResponderCallbacks,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import styles from './Slider.styles';
 
 export default function CustomSlider() {
   // ------------------ OPTIONS ------------------------ //
@@ -113,10 +114,10 @@ export default function CustomSlider() {
   const [panResponder] = useState(getPanResponder());
   // ----------------- Render ----------------------- //
   return (
-    <View style={s.mainContainer}>
-      <View style={s.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.container}>
         <View
-          style={s.sliderContainer}
+          style={styles.sliderContainer}
           onLayout={(event) =>
             setSliderSize(
               event.nativeEvent.layout.height,
@@ -126,7 +127,7 @@ export default function CustomSlider() {
         >
           <Animated.View
             style={[
-              s.draggable,
+              styles.draggable,
               {
                 transform: [
                   {
@@ -148,7 +149,7 @@ export default function CustomSlider() {
             ]}
             {...panResponder.panHandlers}
           >
-            <View style={s.circle}>
+            <View style={styles.circle}>
               <MaterialCommunityIcons
                 name={icon}
                 size={25}
@@ -162,54 +163,4 @@ export default function CustomSlider() {
   );
 }
 
-const s = StyleSheet.create({
-  mainContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: '100%',
-    aspectRatio: 4,
-  },
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    flex: 1,
-    flexDirection: 'row',
-  },
 
-  sliderContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    height: '100%',
-    flex: 8,
-  },
-
-  draggable: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    aspectRatio: 1,
-    position: 'absolute',
-    top: -5,
-    borderRadius: 100,
-    overflow: 'visible',
-  },
-  circle: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.24,
-    shadowRadius: 2.8,
-    elevation: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 60,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#f1f1f1',
-    overflow: 'visible',
-    padding: 20,
-  },
-});
