@@ -1,4 +1,5 @@
-import Draggable from 'components/DraggableComponent';
+import Draggable from 'components/Draggable/Draggable';
+import SoundButton from 'components/SoundButton/SoundButton';
 import globalStyles from 'config/globalStyles';
 import { staticText } from 'config/staticText';
 import useLoader, { LoadingState } from 'hooks/useLoader';
@@ -23,26 +24,7 @@ function HomePage() {
           ? 'loading'
           : staticText.appName}
       </Text>
-      <Draggable
-        x={75}
-        minX={75}
-        maxX={75}
-        y={getScreenHeight(80)}
-        maxY={getScreenHeight(90)}
-        minY={getScreenHeight(10)}
-        onShortPressRelease={() => Alert.alert('touched!!')}
-      >
-        <View
-          style={{
-            height: 50,
-            width: 50,
-            borderRadius: 25,
-            backgroundColor: 'orange',
-          }}
-        >
-          <Text>test</Text>
-        </View>
-      </Draggable>
+      <SoundButton />
 
       {/* <Button onPress={stopSound} title={'stop music'} />
       <Button onPress={playSound} title={'play music'} />
