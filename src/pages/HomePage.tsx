@@ -9,6 +9,7 @@ import { Alert, Button, Image, Text, View } from 'react-native';
 import { downloadLinks, SoundFileNames } from 'services/download.constants';
 import { getScreenHeight } from 'utils/screen-size';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import CustomSlider from 'components/Slider/Sider';
 
 function HomePage() {
   const { loadingStatus, loaderFunction } = useLoader();
@@ -18,7 +19,6 @@ function HomePage() {
     loaderFunction,
   });
   const navIcon = MaterialCommunityIcons.getImageSourceSync('home', 24, 'blue');
-
   return (
     <View style={[globalStyles.container, globalStyles.alignCenter]}>
       <Text>
@@ -27,7 +27,14 @@ function HomePage() {
           : staticText.appName}
       </Text>
       <MaterialCommunityIcons name="home" color={'red'} size={22} />
-      <Image source={navIcon} style={{height: 24, width: 24}}/>
+      <Image source={navIcon} style={{ height: 24, width: 24 }} />
+      <CustomSlider
+        // name="Price"
+        // icon="ticket-percent-outline"
+        // boundaryMin={0}
+        // boundaryMax={99}
+        // initVal={0}
+      />
       {/* <SoundButton /> */}
 
       {/* <Button onPress={stopSound} title={'stop music'} />
