@@ -3,5 +3,5 @@ export enum COLORS {
   PRIMARY_BLACK = '#000',
   PRIMARY_WHITE = '#FFF',
   TRANSPARENT = 'transparent',
-  ERROR = '#ff000044'
+  PURPLE = '#738cee',
 }

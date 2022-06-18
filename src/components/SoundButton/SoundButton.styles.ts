@@ -7,12 +7,15 @@ const styles = StyleSheet.create({
     height: getScreenWidth(19),
     width: getScreenWidth(19),
     borderRadius: getScreenWidth(10),
-    backgroundColor: 'orange',
+    backgroundColor: COLORS.PRIMARY_WHITE,
   },
   absoluteButton: {
     position: 'absolute',
     top: getScreenHeight(80),
-    left: 75,
+    left: getScreenWidth(4),
+    backgroundColor: COLORS.TRANSPARENT,
+    borderWidth: 2,
+    borderColor: COLORS.PRIMARY_WHITE,
   },
 });
 

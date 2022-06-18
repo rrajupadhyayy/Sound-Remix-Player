@@ -1,4 +1,17 @@
+import { COLORS } from 'config/colorPallete';
 import { getScreenHeight } from 'utils/screen-size';
+
+export const commonDraggableProps = {
+  y: getScreenHeight(70),
+  maxY: getScreenHeight(70),
+  minY: getScreenHeight(10),
+};
+
+export const soundIconSize = getScreenHeight(3.5);
+
+export const getSoundIconColor = (isInDefaultPlace: boolean) => {
+  return isInDefaultPlace ? COLORS.PRIMARY_WHITE : COLORS.PURPLE;
+};
 
 export const generateAudioRanges = () => {
   const maximumRange = getScreenHeight(60);

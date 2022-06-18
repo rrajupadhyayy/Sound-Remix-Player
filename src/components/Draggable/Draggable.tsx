@@ -34,9 +34,7 @@ interface IProps {
   x?: number;
   y?: number;
   z?: number;
-  minX?: number;
   minY?: number;
-  maxX?: number;
   maxY?: number;
 }
 export default function Draggable({
@@ -51,12 +49,12 @@ export default function Draggable({
   x = 0,
   y = 0,
   z = 1,
-  minX,
   minY,
-  maxX,
   maxY,
   onInitialLayout,
 }: IProps) {
+  const minX = x;
+  const maxX = x;
   // The Animated object housing our xy value so that we can spring back
   const pan = useRef(new Animated.ValueXY());
   // Always set to xy value of pan, would like to remove

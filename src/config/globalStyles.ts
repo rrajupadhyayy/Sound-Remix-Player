@@ -5,7 +5,7 @@ import { COLORS } from './colorPallete';
 const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.PRIMARY_WHITE,
+    backgroundColor: COLORS.PURPLE,
     width: getScreenWidth(100),
     height: getScreenHeight(100),
   },
@@ -46,6 +46,10 @@ const globalStyles = StyleSheet.create({
   },
   absoluteFlex: {
     flex: 1,
+  },
+  safeAreaContainer: {
+    flex: 1,
+    backgroundColor: COLORS.PURPLE,
   },
 });
 

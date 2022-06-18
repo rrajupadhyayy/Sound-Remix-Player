@@ -2,12 +2,19 @@ import Draggable from 'components/Draggable/Draggable';
 import globalStyles from 'config/globalStyles';
 import useLoader, { LoadingState } from 'hooks/useLoader';
 import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SoundFileNames, downloadLinks } from 'services/download.constants';
-import { getScreenHeight } from 'utils/screen-size';
+import { getScreenWidth } from 'utils/screen-size';
 import styles from './SoundButton.styles';
-import { generateAudioRanges } from './SoundButton.utils';
+import {
+  commonDraggableProps,
+  generateAudioRanges,
+  getSoundIconColor,
+  soundIconSize,
+} from './SoundButton.utils';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Icons } from 'config/icons';
 
 function SoundButton() {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
@@ -46,52 +53,44 @@ function SoundButton() {
           volume = item.volume;
         }
       });
-      console.log({ volume, position });
       setSoundVolume(volume);
     }
   };
 
-  return (
-    <Fragment>
-      {!isInDefaultPosition ? (
-        <View style={[globalStyles.container]}>
-          <Draggable
-            x={75}
-            minX={75}
-            maxX={75}
-            y={getScreenHeight(70)}
-            maxY={getScreenHeight(70)}
-            minY={getScreenHeight(10)}
-            disabled={isInDefaultPosition}
-            onDragRelease={(e) => handleDrag(e)}
-            onInitialLayout={handleDrag}
-          >
-            <TouchableOpacity
-              style={[
-                globalStyles.alignCenter,
-                styles.buttonContainer,
-                globalStyles.boxShadow,
-              ]}
-              onPress={onStop}
-            >
-              <Text>{text}</Text>
-            </TouchableOpacity>
-          </Draggable>
-        </View>
-      ) : (
-        <TouchableOpacity
-          style={[
-            styles.absoluteButton,
-            globalStyles.alignCenter,
-            globalStyles.boxShadow,
-            styles.buttonContainer,
-          ]}
-          onPress={onPlay}
-        >
-          <Text>{text}</Text>
-        </TouchableOpacity>
-      )}
-    </Fragment>
+  const touchableComponent = () => {
+    return (
+      <TouchableOpacity
+        style={[
+          globalStyles.alignCenter,
+          styles.buttonContainer,
+          globalStyles.boxShadow,
+          isInDefaultPosition && styles.absoluteButton,
+        ]}
+        onPress={isInDefaultPosition ? onPlay : onStop}
+      >
+        <Icon
+          name={Icons.WATER}
+          color={getSoundIconColor(isInDefaultPosition)}
+          size={soundIconSize}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  return !isInDefaultPosition ? (
+    <View style={[globalStyles.container]}>
+      <Draggable
+        {...commonDraggableProps}
+        x={getScreenWidth(4)}
+        disabled={isInDefaultPosition}
+        onDragRelease={handleDrag}
+        onInitialLayout={handleDrag}
+      >
+        {touchableComponent()}
+      </Draggable>
+    </View>
+  ) : (
+    touchableComponent()
   );
 }
 
