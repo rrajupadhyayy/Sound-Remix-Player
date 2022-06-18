@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   absoluteButton: {
     position: 'absolute',
-    top: getScreenHeight(73),
+    top: getScreenHeight(80),
     left: 75,
   },
 });

@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Sound from 'react-native-sound';
 import { downloadMP3 } from 'services/download-mp3';
 import { SoundFileNames } from 'services/download.constants';
-import genericError from 'utils/generic-error';
 import { getLocalData } from 'utils/local-storage';
 import useTryCatch from './useTryCatch';
 
-export default function useSoundPlayer({
+export function loadSound({
   fileName,
   downloadLink,
   loaderFunction,
@@ -15,61 +14,54 @@ export default function useSoundPlayer({
   downloadLink: string;
   loaderFunction: Function;
 }) {
-  const [sourcePath, setSourcePath] = useState<string | null>(null);
+  const [whoosh, setSoundRef] = useState<any>(null);
 
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
-    if (filePathInLocalStorage) {
-      setSourcePath(filePathInLocalStorage);
-      return;
-    }
-
-    const downloadPath = await loaderFunction({
-      callbackFunction: downloadMP3,
-      params: {
-        fileName,
-        downloadLink,
-      },
+    const downloadPath =
+      filePathInLocalStorage ||
+      (await loaderFunction({
+        callbackFunction: downloadMP3,
+        params: {
+          fileName,
+          downloadLink,
+        },
+      }));
+    const whoosh = new Sound(downloadPath, '', (error: any) => {
+      if (error) {
+        console.error({ error });
+        return;
+      }
     });
-    setSourcePath(downloadPath);
+    setSoundRef(whoosh);
   };
 
   useEffect(() => {
     checkForMP3File();
   }, []);
 
-  if (sourcePath) {
-    const whoosh = new Sound(sourcePath, '', (error) => {
-      if (error) {
-        console.error({ error });
-        return;
-      }
-    });
-
-    function playSound() {
-      useTryCatch(() => {
-        whoosh.setNumberOfLoops(-1);
-        whoosh.play();
-      });
-    }
-
-    function stopSound() {
-      useTryCatch(() => whoosh.stop());
-    }
-
-    function setSoundVolume() {
-      useTryCatch(() => whoosh.setVolume(0.5));
-    }
-
-    return {
-      playSound,
-      stopSound,
-      setSoundVolume,
-    };
-  }
-  return {
-    playSound: () => {},
-    stopSound: () => {},
-    setSoundVolume: () => {},
-  };
+  return whoosh;
 }
+
+export const useSoundPlayer = (whoosh: any) => {
+  const playSound = () => {
+    useTryCatch(() => {
+      whoosh.setNumberOfLoops(-1);
+      whoosh.play();
+    });
+  };
+
+  function stopSound() {
+    useTryCatch(() => whoosh.pause());
+  }
+
+  function setSoundVolume() {
+    useTryCatch(() => whoosh.setVolume(0.5));
+  }
+
+  return {
+    playSound,
+    stopSound,
+    setSoundVolume,
+  };
+};

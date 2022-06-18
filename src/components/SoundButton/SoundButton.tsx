@@ -1,56 +1,82 @@
 import Draggable from 'components/Draggable/Draggable';
 import globalStyles from 'config/globalStyles';
-import React, { Fragment, useRef, useState } from 'react';
-import { Animated, Text, TouchableOpacity, View } from 'react-native';
-import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
+import useLoader, { LoadingState } from 'hooks/useLoader';
+import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
+import React, { Fragment, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { SoundFileNames, downloadLinks } from 'services/download.constants';
+import { getScreenHeight } from 'utils/screen-size';
 import styles from './SoundButton.styles';
 
-export const animationState = {
-  duration: 500,
-  useNativeDriver: true,
-};
-
 function SoundButton() {
-  const [isInDefaultPosition, setIsDefaultPosition] = useState<boolean>(true);
-  console.log(getScreenHeight(10), getScreenHeight(70));
+  const [isInDefaultPosition, setIsInDefault] = useState(true);
+  const { loadingStatus, loaderFunction } = useLoader();
+  const isLoading = loadingStatus === LoadingState.LOADING;
+  const text = isLoading ? 'loading' : 'test';
+  const soundRef = loadSound({
+    fileName: SoundFileNames.RAIN,
+    downloadLink: downloadLinks.rain,
+    loaderFunction,
+  });
 
-  return isInDefaultPosition ? (
-    <TouchableOpacity
-      style={[
-        styles.absoluteButton,
-        globalStyles.alignCenter,
-        globalStyles.boxShadow,
-        styles.buttonContainer,
-      ]}
-      onPress={() => setIsDefaultPosition(!isInDefaultPosition)}
-    >
-      <Text>test</Text>
-    </TouchableOpacity>
-  ) : (
-    <View style={[globalStyles.container]}>
-      <Draggable
-        x={75}
-        minX={75}
-        maxX={75}
-        y={isInDefaultPosition ? getScreenHeight(70) : getScreenHeight(60)}
-        maxY={getScreenHeight(70)}
-        minY={getScreenHeight(10)}
-        disabled={isInDefaultPosition}
-        onDragRelease={(e) => console.log({ e })}
-      >
+  if (!soundRef) {
+    return null;
+  }
+
+  const { playSound, stopSound, setSoundVolume } = useSoundPlayer(soundRef);
+
+
+  const onPlay = () => {
+    setIsInDefault(false);
+    playSound();
+  };
+
+  const onStop = () => {
+    setIsInDefault(true);
+    stopSound();
+  };
+
+  return (
+    <Fragment>
+      {!isInDefaultPosition ? (
+        <View style={[globalStyles.container]}>
+          <Draggable
+            x={75}
+            minX={75}
+            maxX={75}
+            y={getScreenHeight(70)}
+            maxY={getScreenHeight(70)}
+            minY={getScreenHeight(10)}
+            disabled={isInDefaultPosition}
+            onDragRelease={(e) => console.log({ e })}
+            onInitialLayout={(initial) => console.log({ initial })}
+          >
+            <TouchableOpacity
+              style={[
+                globalStyles.alignCenter,
+                styles.buttonContainer,
+                globalStyles.boxShadow,
+              ]}
+              onPress={onStop}
+            >
+              <Text>{text}</Text>
+            </TouchableOpacity>
+          </Draggable>
+        </View>
+      ) : (
         <TouchableOpacity
           style={[
+            styles.absoluteButton,
             globalStyles.alignCenter,
-            styles.buttonContainer,
             globalStyles.boxShadow,
+            styles.buttonContainer,
           ]}
-          activeOpacity={0.72}
-          onPress={() => setIsDefaultPosition(!isInDefaultPosition)}
+          onPress={onPlay}
         >
-          <Text>test</Text>
+          <Text>{text}</Text>
         </TouchableOpacity>
-      </Draggable>
-    </View>
+      )}
+    </Fragment>
   );
 }
 

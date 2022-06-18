@@ -1,12 +1,5 @@
 import { emptyFunction } from 'config/misc';
-import React, {
-  useMemo,
-  useCallback,
-  useEffect,
-  useRef,
-  Ref,
-  useState,
-} from 'react';
+import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   PanResponder,
@@ -18,7 +11,6 @@ import {
   NativeSyntheticEvent,
   NativeTouchEvent,
   ViewStyle,
-  Button,
 } from 'react-native';
 
 function clamp(number: number, min: number, max: number) {
@@ -36,11 +28,11 @@ interface IProps {
     gestureState: PanResponderGestureState,
   ) => void;
   onDragRelease?: (position: Object) => void;
+  onInitialLayout: (position: Object) => void;
   onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
   onReverse?: () => { x: number; y: number };
   x?: number;
   y?: number;
-  // z/elevation should be removed because it doesn't sync up visually and haptically
   z?: number;
   minX?: number;
   minY?: number;
@@ -63,6 +55,7 @@ export default function Draggable({
   minY,
   maxX,
   maxY,
+  onInitialLayout,
 }: IProps) {
   // The Animated object housing our xy value so that we can spring back
   const pan = useRef(new Animated.ValueXY());
@@ -72,11 +65,6 @@ export default function Draggable({
   const startBounds = useRef({ top: 0, bottom: 0, left: 0, right: 0 });
   // Whether we're currently dragging or not
   const isDragging = useRef(false);
-  const dragRef = useRef(new Animated.ValueXY());
-  
-  const showRefPosition = () => {
-    return pan.current.getLayout();
-  };
 
   const getBounds = useCallback(() => {
     const left = x! + offsetFromStart.current.x;
@@ -103,11 +91,15 @@ export default function Draggable({
     }).start();
   }, [pan]);
 
+  const onLayoutChange = () => {
+    const position = pan.current.getLayout();
+    return position as Object;
+  };
+
   const onPanResponderRelease = useCallback(
     (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
       isDragging.current = false;
-      const position = showRefPosition();
-      console.log({ position });
+      const position = onLayoutChange();
       if (onDragRelease) {
         onDragRelease(position as Object);
         if (onRelease) {
@@ -224,7 +216,10 @@ export default function Draggable({
         {...animatedViewProps}
         {...panResponder.panHandlers}
         style={pan.current.getLayout()}
-        ref={dragRef}
+        onLayout={() => {
+          const position = onLayoutChange();
+          onInitialLayout(position);
+        }}
       >
         <View
           {...touchableOpacityProps}
