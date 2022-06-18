@@ -48,6 +48,7 @@ export const useSoundPlayer = (whoosh: any) => {
     useTryCatch(() => {
       whoosh.setNumberOfLoops(-1);
       whoosh.play();
+      whoosh.setVolume(0.1);
     });
   };
 
@@ -55,8 +56,13 @@ export const useSoundPlayer = (whoosh: any) => {
     useTryCatch(() => whoosh.pause());
   }
 
-  function setSoundVolume() {
-    useTryCatch(() => whoosh.setVolume(0.5));
+  function setSoundVolume(volume: number) {
+    useTryCatch(() => {
+      const currentVolume = whoosh.getVolume();
+      if (currentVolume !== volume) {
+        whoosh.setVolume(volume);
+      }
+    });
   }
 
   return {

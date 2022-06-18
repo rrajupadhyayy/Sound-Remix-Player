@@ -27,8 +27,8 @@ interface IProps {
     e: GestureResponderEvent,
     gestureState: PanResponderGestureState,
   ) => void;
-  onDragRelease?: (position: Object) => void;
-  onInitialLayout: (position: Object) => void;
+  onDragRelease?: (position?: string) => void;
+  onInitialLayout: (position?: string) => void;
   onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
   onReverse?: () => { x: number; y: number };
   x?: number;
@@ -93,7 +93,8 @@ export default function Draggable({
 
   const onLayoutChange = () => {
     const position = pan.current.getLayout();
-    return position as Object;
+    const top = JSON.stringify(position['top']);
+    return top;
   };
 
   const onPanResponderRelease = useCallback(
@@ -101,7 +102,7 @@ export default function Draggable({
       isDragging.current = false;
       const position = onLayoutChange();
       if (onDragRelease) {
-        onDragRelease(position as Object);
+        onDragRelease(position);
         if (onRelease) {
           onRelease(e, true);
         }

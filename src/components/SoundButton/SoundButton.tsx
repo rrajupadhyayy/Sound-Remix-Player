@@ -7,6 +7,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { SoundFileNames, downloadLinks } from 'services/download.constants';
 import { getScreenHeight } from 'utils/screen-size';
 import styles from './SoundButton.styles';
+import { generateAudioRanges } from './SoundButton.utils';
 
 function SoundButton() {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
@@ -25,7 +26,6 @@ function SoundButton() {
 
   const { playSound, stopSound, setSoundVolume } = useSoundPlayer(soundRef);
 
-
   const onPlay = () => {
     setIsInDefault(false);
     playSound();
@@ -34,6 +34,20 @@ function SoundButton() {
   const onStop = () => {
     setIsInDefault(true);
     stopSound();
+  };
+
+  const handleDrag = (position?: string) => {
+    if (position) {
+      const top = Number(position) !== 0 ? Number(position) * -1 : 0;
+      const rangeArray = generateAudioRanges();
+      let volume = 0.1;
+      rangeArray.forEach((item) => {
+        if (item.minLimit <= top && top < item.maxLimit) {
+          volume = item.volume;
+        }
+      });
+      setSoundVolume(volume)
+    }
   };
 
   return (
@@ -48,8 +62,8 @@ function SoundButton() {
             maxY={getScreenHeight(70)}
             minY={getScreenHeight(10)}
             disabled={isInDefaultPosition}
-            onDragRelease={(e) => console.log({ e })}
-            onInitialLayout={(initial) => console.log({ initial })}
+            onDragRelease={(e) => handleDrag(e)}
+            onInitialLayout={handleDrag}
           >
             <TouchableOpacity
               style={[
