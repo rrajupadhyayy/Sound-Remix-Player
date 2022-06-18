@@ -2,8 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import Sound from 'react-native-sound';
 import { downloadMP3 } from 'services/download-mp3';
 import { SoundFileNames } from 'services/download.constants';
-import { getLocalData } from 'utils/local-storage';
+import { errorWithRetry } from 'utils/generic-error';
+import { getLocalData, storeLocalData } from 'utils/local-storage';
 import useTryCatch from './useTryCatch';
+
+async function clearFromLocal(fileName: SoundFileNames) {
+  await storeLocalData(fileName, '');
+}
 
 export function loadSound({
   fileName,
@@ -15,6 +20,7 @@ export function loadSound({
   loaderFunction: Function;
 }) {
   const [whoosh, setSoundRef] = useState<any>(null);
+  const [reRender, forceReRender] = useState(false)
 
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
@@ -27,10 +33,10 @@ export function loadSound({
           downloadLink,
         },
       }));
-    const whoosh = new Sound(downloadPath, '', (error: any) => {
+    const whoosh = new Sound(downloadPath, '', async (error: any) => {
       if (error) {
-        console.error({ error });
-        return;
+        errorWithRetry({ callback: () => clearFromLocal(fileName) });
+        forceReRender(true);
       }
     });
     setSoundRef(whoosh);
@@ -38,7 +44,7 @@ export function loadSound({
 
   useEffect(() => {
     checkForMP3File();
-  }, []);
+  }, [reRender]);
 
   return whoosh;
 }

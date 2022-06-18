@@ -46,7 +46,8 @@ function SoundButton() {
           volume = item.volume;
         }
       });
-      setSoundVolume(volume)
+      console.log({ volume, position });
+      setSoundVolume(volume);
     }
   };
 

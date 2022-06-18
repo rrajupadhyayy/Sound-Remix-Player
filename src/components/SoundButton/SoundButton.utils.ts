@@ -1,7 +1,7 @@
 import { getScreenHeight } from 'utils/screen-size';
 
 export const generateAudioRanges = () => {
-  const maximumRange = getScreenHeight(62);
+  const maximumRange = getScreenHeight(60);
   const minimumRange = getScreenHeight(6);
   const rangeArray = [];
   for (let index = 1; index < 10; index++) {
@@ -15,7 +15,7 @@ export const generateAudioRanges = () => {
   rangeArray.push({
     volume: 1,
     minLimit: maximumRange - minimumRange,
-    maxLimit: maximumRange,
+    maxLimit: maximumRange + getScreenHeight(10),
   });
   return rangeArray;
 };
