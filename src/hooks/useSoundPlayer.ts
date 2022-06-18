@@ -6,7 +6,7 @@ import { errorWithRetry } from 'utils/generic-error';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
 import useTryCatch from './useTryCatch';
 
-async function clearFromLocal(fileName: SoundFileNames) {
+async function clearSoundFromLocal(fileName: SoundFileNames) {
   await storeLocalData(fileName, '');
 }
 
@@ -20,8 +20,9 @@ export function loadSound({
   loaderFunction: Function;
 }) {
   const [whoosh, setSoundRef] = useState<any>(null);
-  const [reRender, forceReRender] = useState(false)
-
+  const [reRender, forceReRender] = useState(false);
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
+  console.log({ loadingPercentage });
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
     const downloadPath =
@@ -31,11 +32,12 @@ export function loadSound({
         params: {
           fileName,
           downloadLink,
+          setLoadingPercentage,
         },
       }));
     const whoosh = new Sound(downloadPath, '', async (error: any) => {
       if (error) {
-        errorWithRetry({ callback: () => clearFromLocal(fileName) });
+        errorWithRetry({ callback: () => clearSoundFromLocal(fileName) });
         forceReRender(true);
       }
     });

@@ -13,12 +13,15 @@ export function getFileNamWithExtension(fileName: string) {
 export async function downloadMP3({
   fileName,
   downloadLink,
+  setLoadingPercentage,
 }: {
   fileName: SoundFileNames;
   downloadLink: string;
+  setLoadingPercentage: Function;
 }) {
   const filePathInLocalStorage = await getLocalData(fileName);
   if (filePathInLocalStorage) {
+    setLoadingPercentage(100);
     return filePathInLocalStorage;
   }
   return await RNFetchBlob.config({
@@ -26,7 +29,11 @@ export async function downloadMP3({
     path: downloadPath + getFileNamWithExtension(fileName),
   })
     .fetch('GET', downloadLink, {})
+    .progress((received, total) => {
+      setLoadingPercentage(100 * (received / total));
+    })
     .then(async (res) => {
+      setLoadingPercentage(100);
       await storeLocalData(fileName, res.path());
       return res.path();
     })
