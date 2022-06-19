@@ -4,7 +4,7 @@ export enum SoundFileNames {
   RAIN = 'rain',
   WIND = 'wind',
   THUNDER = 'thunder',
-  LEAVES = 'leafs',
+  LEAVES = 'leaves',
 }
 
 export interface SoundButtonProps {
