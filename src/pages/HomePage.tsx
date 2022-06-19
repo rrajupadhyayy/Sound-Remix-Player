@@ -1,18 +1,20 @@
 import SoundButton from 'components/SoundButton/SoundButton';
 import { generateSoundDisplayArray } from 'components/SoundButton/SoundButton.utils';
+import { LinearGradientColors } from 'config/colorPallete';
 import globalStyles from 'config/globalStyles';
 import React from 'react';
-import { View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 function HomePage() {
   const soundButtonDisplayArray = generateSoundDisplayArray();
   return (
-    <View
+    <LinearGradient
       style={[
         globalStyles.container,
         globalStyles.alignCenter,
         globalStyles.flexRow,
       ]}
+      colors={LinearGradientColors}
     >
       {soundButtonDisplayArray.map((item, index) => {
         const { fileName, downloadLink, distanceFromLeft, iconName } = item;
@@ -26,7 +28,7 @@ function HomePage() {
           />
         );
       })}
-    </View>
+    </LinearGradient>
   );
 }
 
