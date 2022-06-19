@@ -3,7 +3,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
 import { defaulDownloadParams, downloadPath } from './download.constants';
 import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
-import { staticText } from 'config/staticText';
+import { staticText } from 'config';
 import { checkInternetConnection } from 'hooks/useNetInfo';
 
 export function getFileNamWithExtension(fileName: string) {

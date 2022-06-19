@@ -1,4 +1,4 @@
-import { staticText } from 'config/staticText';
+import { staticText } from 'config';
 import { Alert } from 'react-native';
 
 export const emptyFunction = () => {};

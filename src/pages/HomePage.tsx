@@ -1,11 +1,18 @@
+import { useNetInfo } from '@react-native-community/netinfo';
 import SoundButton from 'components/SoundButton/SoundButton';
 import { generateSoundDisplayArray } from 'components/SoundButton/SoundButton.utils';
-import { LinearGradientColors } from 'config/colorPallete';
-import globalStyles from 'config/globalStyles';
+import {
+  LinearGradientColors,
+  globalStyles,
+  staticText,
+  typography,
+} from 'config';
 import React from 'react';
+import { Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 function HomePage() {
+  useNetInfo();
   const soundButtonDisplayArray = generateSoundDisplayArray();
   return (
     <LinearGradient
@@ -16,6 +23,7 @@ function HomePage() {
       ]}
       colors={LinearGradientColors}
     >
+      <Text style={typography.appTitle}>{staticText.homeTitle}</Text>
       {soundButtonDisplayArray.map((item, index) => {
         const { fileName, downloadLink, distanceFromLeft, iconName } = item;
         return (

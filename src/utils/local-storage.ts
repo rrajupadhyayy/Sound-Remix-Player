@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SoundFileNames } from 'services/download.constants';
+import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
+import genericError from './error-handling';
 
 export const storeLocalData = async (key: SoundFileNames, value: string) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (e) {
-    console.info(e);
+    genericError();
   }
 };
 

@@ -1,5 +1,5 @@
 import Draggable from 'components/Draggable/Draggable';
-import globalStyles from 'config/globalStyles';
+import { globalStyles } from 'config';
 import useLoader, { LoadingState } from 'hooks/useLoader';
 import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
 import React, { useState } from 'react';
@@ -31,7 +31,6 @@ function SoundButton({
     loaderFunction,
   });
 
-  console.log({ loadingPercentage });
   const { playSound, stopSound, setSoundVolume } = useSoundPlayer(whoosh);
 
   const onPlay = () => {

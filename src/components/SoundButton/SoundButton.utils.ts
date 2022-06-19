@@ -1,5 +1,4 @@
-import { COLORS } from 'config/colorPallete';
-import { Icons } from 'config/icons';
+import { COLORS, Icons } from 'config';
 import { downloadLinks } from 'services/download.constants';
 import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 import { SoundButtonProps, SoundFileNames } from './SoundButton.types';
@@ -53,25 +52,21 @@ const soundArray = [
     fileName: SoundFileNames.RAIN,
     downloadLink: downloadLinks.RAIN,
     iconName: Icons.WATER,
-    distanceFromLeft: defaultSpacingBetweenButtons,
   },
   {
     fileName: SoundFileNames.WIND,
     downloadLink: downloadLinks.WIND,
     iconName: Icons.WIND,
-    distanceFromLeft: defaultSpacingBetweenButtons * 2 + defaultButtonSize,
   },
   {
     fileName: SoundFileNames.THUNDER,
     downloadLink: downloadLinks.THUNDER,
     iconName: Icons.THUNDER,
-    distanceFromLeft: defaultSpacingBetweenButtons * 3 + defaultButtonSize * 2,
   },
   {
     fileName: SoundFileNames.LEAVES,
     downloadLink: downloadLinks.LEAVES,
     iconName: Icons.LEAVES,
-    distanceFromLeft: defaultSpacingBetweenButtons * 4 + defaultButtonSize * 3,
   },
 ];
 

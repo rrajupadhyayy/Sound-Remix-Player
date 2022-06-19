@@ -4,5 +4,6 @@ export const staticText = {
   genericRetryError: 'The downloaded files seem to be corrupted! Do you want to reset cache?',
   noInternetError: 'You are not connected to the internet',
   cancel: "Cancel",
-  ok: "OK"
+  ok: "OK",
+  homeTitle: 'Passing Storm'
 };

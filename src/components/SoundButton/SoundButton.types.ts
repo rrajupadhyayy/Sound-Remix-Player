@@ -1,4 +1,4 @@
-import { Icons } from "config/icons";
+import { Icons } from 'config';
 
 export enum SoundFileNames {
   RAIN = 'rain',

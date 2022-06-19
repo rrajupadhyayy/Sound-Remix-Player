@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import genericError from 'utils/error-handling';
-import { staticText } from 'config/staticText';
+import { staticText } from 'config';
 
 export const useNetInfo = () => {
   useEffect(() => {

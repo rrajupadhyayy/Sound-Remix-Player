@@ -1,4 +1,4 @@
-import { COLORS } from 'config/colorPallete';
+import { COLORS } from 'config';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { getScreenHeight } from 'utils/screen-size';
 import { defaultButtonSize } from './SoundButton.utils';
