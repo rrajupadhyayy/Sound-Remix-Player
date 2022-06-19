@@ -4,10 +4,10 @@
 
 ## Dependencies
 
-[node](https://nodejs.org/en/)
-[nvm](https://github.com/nvm-sh/nvm)
-[Xcode](https://developer.apple.com/xcode/)
-[Android Studio](https://developer.android.com/studio)
+- [node](https://nodejs.org/en/)
+- [nvm](https://github.com/nvm-sh/nvm)
+- [Xcode](https://developer.apple.com/xcode/)
+- [Android Studio](https://developer.android.com/studio)
 ## Installation on local machine
 
 Use the correct node version

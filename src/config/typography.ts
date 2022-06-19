@@ -1,3 +1,5 @@
+// Constant file to store the font styles
+
 import { StyleSheet } from 'react-native';
 import { getScreenWidth } from 'utils/screen-size';
 import { COLORS } from './colorPallete';

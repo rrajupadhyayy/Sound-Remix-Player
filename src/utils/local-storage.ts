@@ -1,3 +1,4 @@
+// localstorage helper file to store and read local data
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
 import genericError from './error-handling';

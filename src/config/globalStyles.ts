@@ -1,3 +1,5 @@
+// constant file to save the commonly used styles
+
 import { StyleSheet } from 'react-native';
 import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 import { COLORS } from './colorPallete';

@@ -1,3 +1,7 @@
+// Made with reference to https://github.com/tongyy/react-native-draggable
+// The original library has many unrequired features and is not compatible with the latest version of RN and TS.
+// User Touch events are being handled with the help  of panresponder'
+
 import { emptyFunction } from 'utils/error-handling';
 import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 import {
@@ -12,27 +16,9 @@ import {
   NativeTouchEvent,
   ViewStyle,
 } from 'react-native';
-interface DraggableProps {
-  children?: React.ReactNode;
-  shouldReverse?: boolean;
-  disabled?: boolean;
-  animatedViewProps?: object;
-  touchableOpacityProps?: object;
-  onDrag?: (
-    e: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => void;
-  onDragRelease?: (position?: string) => void;
-  onInitialLayout: (position?: string) => void;
-  onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
-  onReverse?: () => { x: number; y: number };
-  x?: number;
-  y?: number;
-  z?: number;
-  minY?: number;
-  maxY?: number;
-}
+import { DraggableProps } from './Draggable.types';
 
+// function to calculate if the component can move ahead/behind its current co ordinate
 function clamp(number: number, min: number, max: number) {
   return Math.max(min, Math.min(number, max));
 }
@@ -64,6 +50,7 @@ export default function Draggable({
   // Whether we're currently dragging or not
   const isDragging = useRef(false);
 
+  // get screen position and component position
   const getBounds = useCallback(() => {
     const left = x! + offsetFromStart.current.x;
     const top = y! + offsetFromStart.current.y;
@@ -89,6 +76,7 @@ export default function Draggable({
     }).start();
   }, [pan]);
 
+  // listener to respond the current position of the component ( to manage volume )
   const onLayoutChange = () => {
     const position = pan.current.getLayout();
     const top = JSON.stringify(position['top']);
@@ -96,7 +84,7 @@ export default function Draggable({
   };
 
   const onPanResponderRelease = useCallback(
-    (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+    (e: GestureResponderEvent, _gestureState: PanResponderGestureState) => {
       isDragging.current = false;
       const position = onLayoutChange();
       if (onDragRelease) {
@@ -152,7 +140,6 @@ export default function Draggable({
         shouldStartDrag(gestureState),
       onPanResponderGrant,
       onPanResponderMove: Animated.event([], {
-        // Typed incorrectly https://reactnative.dev/docs/panresponder
         listener: handleOnDrag as (
           event: NativeSyntheticEvent<NativeTouchEvent>,
         ) => void,

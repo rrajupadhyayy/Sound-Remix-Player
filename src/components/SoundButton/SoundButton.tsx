@@ -1,3 +1,5 @@
+// Common sound button component
+
 import Draggable from 'components/Draggable/Draggable';
 import { globalStyles } from 'config';
 import useLoader, { LoadingState } from 'hooks/useLoader';
@@ -16,22 +18,28 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import { SoundButtonProps } from './SoundButton.types';
 
+// Initialzing outside the render function to avoid unecessary recalculation
+const rangeArray = generateAudioRanges();
+
 function SoundButton({
   fileName,
   downloadLink,
   distanceFromLeft,
   iconName,
 }: SoundButtonProps) {
-  const [isInDefaultPosition, setIsInDefault] = useState(true);
+  const [isInDefaultPosition, setIsInDefault] = useState<boolean>(true);
+  // state to toggle between sound playing/stopped state
   const { loadingStatus, loaderFunction } = useLoader();
   const isLoading = loadingStatus === LoadingState.LOADING;
-  const { whoosh, loadingPercentage, setLoadingPercentage } = loadSound({
+  const { soundRef, loadingPercentage, setLoadingPercentage } = loadSound({
     fileName,
     downloadLink,
     loaderFunction,
   });
+  // soundRef and loading percentage if file is downloading
 
-  const { playSound, stopSound, setSoundVolume } = useSoundPlayer(whoosh);
+  const { playSound, stopSound, setSoundVolume } = useSoundPlayer(soundRef);
+  // initialize sound methds
 
   const onPlay = () => {
     setIsInDefault(false);
@@ -43,10 +51,10 @@ function SoundButton({
     stopSound();
   };
 
+  // function check if the component position lies between one of the range values
   const handleDrag = (position?: string) => {
     if (position) {
       const top = Number(position) !== 0 ? Number(position) * -1 : 0;
-      const rangeArray = generateAudioRanges();
       let volume = 0.1;
       rangeArray.forEach((item) => {
         if (item.minLimit <= top && top < item.maxLimit) {
@@ -84,12 +92,14 @@ function SoundButton({
         onPress={isInDefaultPosition ? onPlay : onStop}
         activeOpacity={0.7}
       >
+        {/* only triggere progress bar component when file is to be downloaded */}
         {isInDefaultPosition && loadingPercentage > 0 ? (
           <CircularProgressBase
             key={fileName}
+            {...commonProgressProps}
             value={loadingPercentage}
             onAnimationComplete={() => setLoadingPercentage(0)}
-            {...commonProgressProps}
+            // set to 0  after completion to dismount circular progress bar component
           >
             {iconComponent()}
           </CircularProgressBase>

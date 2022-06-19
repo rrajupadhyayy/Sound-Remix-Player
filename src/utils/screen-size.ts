@@ -1,3 +1,4 @@
+// Screen helper file to determine screenWidth and screenHeight
 import { Dimensions, PixelRatio } from 'react-native';
 
 const getScreenWidth = (widthPercent: string | number) => {

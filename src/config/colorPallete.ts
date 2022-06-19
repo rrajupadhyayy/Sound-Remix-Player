@@ -1,3 +1,5 @@
+// Constant file to save all the color variables
+
 export enum COLORS {
   BOX_SHADOW = 'rgba(0, 0, 0, 0.2)',
   PRIMARY_BLACK = '#000',

@@ -1,3 +1,4 @@
+// The constant params for RNFetchBlob are stored here
 import RNFetchBlob from 'rn-fetch-blob';
 
 export const downloadPath = RNFetchBlob.fs.dirs.DocumentDir;

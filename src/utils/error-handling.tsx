@@ -1,3 +1,4 @@
+// Common helper file to display error state
 import { staticText } from 'config';
 import { Alert } from 'react-native';
 

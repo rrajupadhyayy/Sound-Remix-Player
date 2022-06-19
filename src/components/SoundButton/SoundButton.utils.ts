@@ -3,6 +3,7 @@ import { downloadLinks } from 'services/download.constants';
 import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 import { SoundButtonProps, SoundFileNames } from './SoundButton.types';
 
+// some common props and constants defined
 export const defaultSpacingBetweenButtons = getScreenWidth(4);
 export const defaultButtonSize = getScreenWidth(19);
 
@@ -27,6 +28,8 @@ export const getSoundIconColor = (isInDefaultPlace: boolean) => {
   return isInDefaultPlace ? COLORS.PRIMARY_WHITE : COLORS.PURPLE;
 };
 
+// Since the the button movement ranges between 0 - screenHeight(60)
+// this function creates an array of ranges for min/max and update volume accordingly
 export const generateAudioRanges = () => {
   const maximumRange = getScreenHeight(60);
   const minimumRange = getScreenHeight(6);
@@ -43,6 +46,7 @@ export const generateAudioRanges = () => {
     volume: 1,
     minLimit: maximumRange - minimumRange,
     maxLimit: maximumRange + getScreenHeight(10),
+    // Adding extra limit just incase some miscalculation from panresponder to the upper limit
   });
   return rangeArray;
 };
@@ -70,6 +74,7 @@ const soundArray = [
   },
 ];
 
+// function to generate x co ordinates for the sound buttons to be displayed
 export const generateSoundDisplayArray = () => {
   const soundButtonDisplayArray = [];
   for (let index = 1; index < 5; index++) {
