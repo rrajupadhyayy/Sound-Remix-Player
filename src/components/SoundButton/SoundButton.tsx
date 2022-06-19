@@ -15,23 +15,20 @@ import {
 } from './SoundButton.utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Icons } from 'config/icons';
+import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 
 function SoundButton() {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
   const { loadingStatus, loaderFunction } = useLoader();
   const isLoading = loadingStatus === LoadingState.LOADING;
   const text = isLoading ? 'loading' : 'test';
-  const soundRef = loadSound({
+  const { whoosh, loadingPercentage, setLoadingPercentage } = loadSound({
     fileName: SoundFileNames.RAIN,
     downloadLink: downloadLinks.rain,
     loaderFunction,
   });
 
-  if (!soundRef) {
-    return null;
-  }
-
-  const { playSound, stopSound, setSoundVolume } = useSoundPlayer(soundRef);
+  const { playSound, stopSound, setSoundVolume } = useSoundPlayer(whoosh);
 
   const onPlay = () => {
     setIsInDefault(false);
@@ -57,6 +54,12 @@ function SoundButton() {
     }
   };
 
+  const props = {
+    activeStrokeWidth: 5,
+    inActiveStrokeWidth: 5,
+    inActiveStrokeOpacity: 0.2,
+  };
+
   const touchableComponent = () => {
     return (
       <TouchableOpacity
@@ -68,11 +71,27 @@ function SoundButton() {
         ]}
         onPress={isInDefaultPosition ? onPlay : onStop}
       >
-        <Icon
-          name={Icons.WATER}
-          color={getSoundIconColor(isInDefaultPosition)}
-          size={soundIconSize}
-        />
+        {isInDefaultPosition && loadingPercentage > 0 ? (
+          <CircularProgressBase
+            initialValue={0}
+            value={loadingPercentage}
+            duration={2000}
+            {...props}
+            onAnimationComplete={() => setLoadingPercentage(0)}
+          >
+            <Icon
+              name={Icons.WATER}
+              color={getSoundIconColor(isInDefaultPosition)}
+              size={soundIconSize}
+            />
+          </CircularProgressBase>
+        ) : (
+          <Icon
+            name={Icons.WATER}
+            color={getSoundIconColor(isInDefaultPosition)}
+            size={soundIconSize}
+          />
+        )}
       </TouchableOpacity>
     );
   };

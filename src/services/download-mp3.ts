@@ -30,7 +30,7 @@ export async function downloadMP3({
   })
     .fetch('GET', downloadLink, {})
     .progress((received, total) => {
-      setLoadingPercentage(100 * (received / total));
+      setLoadingPercentage(Math.round(100 * (received / total)));
     })
     .then(async (res) => {
       setLoadingPercentage(100);

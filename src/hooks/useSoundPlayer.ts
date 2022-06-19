@@ -1,3 +1,4 @@
+import { emptyFunction } from 'config/misc';
 import { useEffect, useRef, useState } from 'react';
 import Sound from 'react-native-sound';
 import { downloadMP3 } from 'services/download-mp3';
@@ -29,7 +30,7 @@ export function loadSound({
   const [whoosh, setSoundRef] = useState<any>(null);
   const [reRender, forceReRender] = useState(false);
   const [loadingPercentage, setLoadingPercentage] = useState(0);
-  console.log({ loadingPercentage });
+
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
     const downloadPath =
@@ -60,34 +61,42 @@ export function loadSound({
     checkForMP3File();
   }, [reRender]);
 
-  return whoosh;
+  return { whoosh, loadingPercentage, setLoadingPercentage };
 }
 
 export const useSoundPlayer = (whoosh: any) => {
-  const playSound = () => {
-    useTryCatch(() => {
-      whoosh.setNumberOfLoops(-1);
-      whoosh.play();
-      whoosh.setVolume(0.1);
-    });
-  };
+  if (whoosh) {
+    const playSound = () => {
+      useTryCatch(() => {
+        whoosh.setNumberOfLoops(-1);
+        whoosh.play();
+        whoosh.setVolume(0.1);
+      });
+    };
 
-  function stopSound() {
-    useTryCatch(() => whoosh.pause());
-  }
+    function stopSound() {
+      useTryCatch(() => whoosh.pause());
+    }
 
-  function setSoundVolume(volume: number) {
-    useTryCatch(() => {
-      const currentVolume = whoosh.getVolume();
-      if (currentVolume !== volume) {
-        whoosh.setVolume(volume);
-      }
-    });
+    function setSoundVolume(volume: number) {
+      useTryCatch(() => {
+        const currentVolume = whoosh.getVolume();
+        if (currentVolume !== volume) {
+          whoosh.setVolume(volume);
+        }
+      });
+    }
+
+    return {
+      playSound,
+      stopSound,
+      setSoundVolume,
+    };
   }
 
   return {
-    playSound,
-    stopSound,
-    setSoundVolume,
+    playSound: emptyFunction,
+    stopSound: emptyFunction,
+    setSoundVolume: emptyFunction,
   };
 };
