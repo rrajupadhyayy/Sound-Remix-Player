@@ -6,8 +6,15 @@ import { errorWithRetry } from 'utils/generic-error';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
 import useTryCatch from './useTryCatch';
 
-async function clearSoundFromLocal(fileName: SoundFileNames) {
+async function clearSoundFromLocal({
+  fileName,
+  functionToReRender,
+}: {
+  fileName: SoundFileNames;
+  functionToReRender: Function;
+}) {
   await storeLocalData(fileName, '');
+  functionToReRender(true);
 }
 
 export function loadSound({
@@ -37,8 +44,13 @@ export function loadSound({
       }));
     const whoosh = new Sound(downloadPath, '', async (error: any) => {
       if (error) {
-        errorWithRetry({ callback: () => clearSoundFromLocal(fileName) });
-        forceReRender(true);
+        errorWithRetry({
+          callback: () =>
+            clearSoundFromLocal({
+              fileName,
+              functionToReRender: () => forceReRender(true),
+            }),
+        });
       }
     });
     setSoundRef(whoosh);
