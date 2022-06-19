@@ -1,11 +1,8 @@
-import genericError from 'utils/generic-error';
+import genericError from 'utils/error-handling';
 import RNFetchBlob from 'rn-fetch-blob';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
-import {
-  defaulDownloadParams,
-  downloadPath,
-  SoundFileNames,
-} from './download.constants';
+import { defaulDownloadParams, downloadPath } from './download.constants';
+import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
 
 export function getFileNamWithExtension(fileName: string) {
   return `/${fileName}.mp3`;

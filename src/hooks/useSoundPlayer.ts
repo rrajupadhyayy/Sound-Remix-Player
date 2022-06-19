@@ -1,9 +1,8 @@
-import { emptyFunction } from 'config/misc';
-import { useEffect, useRef, useState } from 'react';
+import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
+import { useEffect, useState } from 'react';
 import Sound from 'react-native-sound';
 import { downloadMP3 } from 'services/download';
-import { SoundFileNames } from 'services/download.constants';
-import { errorWithRetry } from 'utils/generic-error';
+import { emptyFunction, errorWithRetry } from 'utils/error-handling';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
 import useTryCatch from './useTryCatch';
 
@@ -37,10 +36,6 @@ export function loadSound({
       setLoadingPercentage(0);
     }
 
-    if (filePathInLocalStorage) {
-      setLoadingPercentage(100);
-    }
-
     const downloadPath =
       filePathInLocalStorage ||
       (await loaderFunction({
@@ -51,10 +46,6 @@ export function loadSound({
           setLoadingPercentage,
         },
       }));
-
-    if (loadingPercentage === 0) {
-      setLoadingPercentage(100);
-    }
 
     const whoosh = new Sound(downloadPath, '', async (error: any) => {
       if (error) {

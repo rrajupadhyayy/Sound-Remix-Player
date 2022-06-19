@@ -1,4 +1,4 @@
-import genericError from 'utils/generic-error';
+import genericError from 'utils/error-handling';
 
 export default async function useTryCatch(
   callbackFunction: Function,

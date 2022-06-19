@@ -1,4 +1,4 @@
-import { emptyFunction } from 'config/misc';
+import { emptyFunction } from 'utils/error-handling';
 import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,

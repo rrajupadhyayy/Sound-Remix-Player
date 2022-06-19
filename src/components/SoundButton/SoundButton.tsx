@@ -1,6 +1,6 @@
 import Draggable from 'components/Draggable/Draggable';
 import globalStyles from 'config/globalStyles';
-import useLoader from 'hooks/useLoader';
+import useLoader, { LoadingState } from 'hooks/useLoader';
 import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
@@ -23,13 +23,15 @@ function SoundButton({
   iconName,
 }: SoundButtonProps) {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
-  const { loaderFunction } = useLoader();
-  const { whoosh, loadingPercentage } = loadSound({
+  const { loadingStatus, loaderFunction } = useLoader();
+  const isLoading = loadingStatus === LoadingState.LOADING;
+  const { whoosh, loadingPercentage, setLoadingPercentage } = loadSound({
     fileName,
     downloadLink,
     loaderFunction,
   });
 
+  console.log({ loadingPercentage });
   const { playSound, stopSound, setSoundVolume } = useSoundPlayer(whoosh);
 
   const onPlay = () => {
@@ -73,15 +75,21 @@ function SoundButton({
           globalStyles.alignCenter,
           styles.buttonContainer,
           globalStyles.boxShadow,
-          isInDefaultPosition && generateAbsoluteStyle(distanceFromLeft),
+          isInDefaultPosition &&
+            generateAbsoluteStyle(
+              distanceFromLeft,
+              !isLoading && loadingPercentage === 0,
+            ),
         ]}
+        disabled={isLoading}
         onPress={isInDefaultPosition ? onPlay : onStop}
+        activeOpacity={0.7}
       >
-        {isInDefaultPosition ? (
+        {isInDefaultPosition && loadingPercentage > 0 ? (
           <CircularProgressBase
             key={fileName}
-            initialValue={loadingPercentage}
             value={loadingPercentage}
+            onAnimationComplete={() => setLoadingPercentage(0)}
             {...commonProgressProps}
           >
             {iconComponent()}

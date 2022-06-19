@@ -14,6 +14,7 @@ export const commonDraggableProps = {
 };
 
 export const commonProgressProps = {
+  initialValue: 0,
   duration: 2000,
   activeStrokeWidth: 3,
   activeStrokeColor: COLORS.PRIMARY_WHITE,
