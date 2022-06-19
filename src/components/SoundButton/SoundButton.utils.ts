@@ -1,5 +1,5 @@
 import { COLORS } from 'config/colorPallete';
-import { getScreenHeight } from 'utils/screen-size';
+import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 
 export const commonDraggableProps = {
   y: getScreenHeight(70),
@@ -7,7 +7,15 @@ export const commonDraggableProps = {
   minY: getScreenHeight(10),
 };
 
-export const soundIconSize = getScreenHeight(3.5);
+export const commonProgressProps = {
+  duration: 2000,
+  activeStrokeWidth: 3,
+  activeStrokeColor: COLORS.PRIMARY_WHITE,
+  inActiveStrokeOpacity: 0,
+  radius: getScreenWidth(10),
+};
+
+export const soundIconSize = getScreenHeight(4);
 
 export const getSoundIconColor = (isInDefaultPlace: boolean) => {
   return isInDefaultPlace ? COLORS.PRIMARY_WHITE : COLORS.PURPLE;

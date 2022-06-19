@@ -33,6 +33,10 @@ export function loadSound({
 
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
+    if (loadingPercentage > 0) {
+      setLoadingPercentage(0);
+    }
+
     const downloadPath =
       filePathInLocalStorage ||
       (await loaderFunction({
@@ -43,6 +47,11 @@ export function loadSound({
           setLoadingPercentage,
         },
       }));
+
+    if (loadingPercentage === 0) {
+      setLoadingPercentage(100);
+    }
+
     const whoosh = new Sound(downloadPath, '', async (error: any) => {
       if (error) {
         errorWithRetry({

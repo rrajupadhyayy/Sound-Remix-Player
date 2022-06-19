@@ -14,8 +14,6 @@ const styles = StyleSheet.create({
     top: getScreenHeight(80),
     left: getScreenWidth(4),
     backgroundColor: COLORS.TRANSPARENT,
-    borderWidth: 2,
-    borderColor: COLORS.PRIMARY_WHITE,
   },
 });
 

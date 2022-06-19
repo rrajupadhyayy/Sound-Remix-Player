@@ -1,14 +1,15 @@
 import Draggable from 'components/Draggable/Draggable';
 import globalStyles from 'config/globalStyles';
-import useLoader, { LoadingState } from 'hooks/useLoader';
+import useLoader from 'hooks/useLoader';
 import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { SoundFileNames, downloadLinks } from 'services/download.constants';
 import { getScreenWidth } from 'utils/screen-size';
 import styles from './SoundButton.styles';
 import {
   commonDraggableProps,
+  commonProgressProps,
   generateAudioRanges,
   getSoundIconColor,
   soundIconSize,
@@ -19,9 +20,7 @@ import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 
 function SoundButton() {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
-  const { loadingStatus, loaderFunction } = useLoader();
-  const isLoading = loadingStatus === LoadingState.LOADING;
-  const text = isLoading ? 'loading' : 'test';
+  const { loaderFunction } = useLoader();
   const { whoosh, loadingPercentage, setLoadingPercentage } = loadSound({
     fileName: SoundFileNames.RAIN,
     downloadLink: downloadLinks.rain,
@@ -54,10 +53,14 @@ function SoundButton() {
     }
   };
 
-  const props = {
-    activeStrokeWidth: 5,
-    inActiveStrokeWidth: 5,
-    inActiveStrokeOpacity: 0.2,
+  const iconComponent = (name: Icons) => {
+    return (
+      <Icon
+        name={name}
+        color={getSoundIconColor(isInDefaultPosition)}
+        size={soundIconSize}
+      />
+    );
   };
 
   const touchableComponent = () => {
@@ -71,26 +74,16 @@ function SoundButton() {
         ]}
         onPress={isInDefaultPosition ? onPlay : onStop}
       >
-        {isInDefaultPosition && loadingPercentage > 0 ? (
+        {isInDefaultPosition ? (
           <CircularProgressBase
-            initialValue={0}
+            initialValue={loadingPercentage}
             value={loadingPercentage}
-            duration={2000}
-            {...props}
-            onAnimationComplete={() => setLoadingPercentage(0)}
+            {...commonProgressProps}
           >
-            <Icon
-              name={Icons.WATER}
-              color={getSoundIconColor(isInDefaultPosition)}
-              size={soundIconSize}
-            />
+            {iconComponent(Icons.WATER)}
           </CircularProgressBase>
         ) : (
-          <Icon
-            name={Icons.WATER}
-            color={getSoundIconColor(isInDefaultPosition)}
-            size={soundIconSize}
-          />
+          iconComponent(Icons.WATER)
         )}
       </TouchableOpacity>
     );
