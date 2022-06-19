@@ -12,12 +12,7 @@ import {
   NativeTouchEvent,
   ViewStyle,
 } from 'react-native';
-
-function clamp(number: number, min: number, max: number) {
-  return Math.max(min, Math.min(number, max));
-}
-
-interface IProps {
+interface DraggableProps {
   children?: React.ReactNode;
   shouldReverse?: boolean;
   disabled?: boolean;
@@ -37,6 +32,11 @@ interface IProps {
   minY?: number;
   maxY?: number;
 }
+
+function clamp(number: number, min: number, max: number) {
+  return Math.max(min, Math.min(number, max));
+}
+
 export default function Draggable({
   children,
   shouldReverse = false,
@@ -52,7 +52,7 @@ export default function Draggable({
   minY,
   maxY,
   onInitialLayout,
-}: IProps) {
+}: DraggableProps) {
   const minX = x;
   const maxX = x;
   // The Animated object housing our xy value so that we can spring back

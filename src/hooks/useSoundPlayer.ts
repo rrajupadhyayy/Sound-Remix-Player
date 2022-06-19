@@ -1,7 +1,7 @@
 import { emptyFunction } from 'config/misc';
 import { useEffect, useRef, useState } from 'react';
 import Sound from 'react-native-sound';
-import { downloadMP3 } from 'services/download-mp3';
+import { downloadMP3 } from 'services/download';
 import { SoundFileNames } from 'services/download.constants';
 import { errorWithRetry } from 'utils/generic-error';
 import { getLocalData, storeLocalData } from 'utils/local-storage';
@@ -33,8 +33,12 @@ export function loadSound({
 
   const checkForMP3File = async () => {
     const filePathInLocalStorage = await getLocalData(fileName);
-    if (loadingPercentage > 0) {
+    if (loadingPercentage > 0 && !filePathInLocalStorage) {
       setLoadingPercentage(0);
+    }
+
+    if (filePathInLocalStorage) {
+      setLoadingPercentage(100);
     }
 
     const downloadPath =

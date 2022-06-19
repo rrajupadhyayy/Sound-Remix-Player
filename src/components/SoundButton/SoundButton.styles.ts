@@ -1,20 +1,27 @@
 import { COLORS } from 'config/colorPallete';
 import { StyleSheet } from 'react-native';
-import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
+import { getScreenHeight } from 'utils/screen-size';
+import { defaultButtonSize } from './SoundButton.utils';
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    height: getScreenWidth(19),
-    width: getScreenWidth(19),
-    borderRadius: getScreenWidth(10),
+    height: defaultButtonSize,
+    width: defaultButtonSize,
+    borderRadius: defaultButtonSize / 2,
     backgroundColor: COLORS.PRIMARY_WHITE,
   },
   absoluteButton: {
     position: 'absolute',
     top: getScreenHeight(80),
-    left: getScreenWidth(4),
     backgroundColor: COLORS.TRANSPARENT,
   },
 });
+
+export const generateAbsoluteStyle = (left: number) => {
+  return {
+    ...styles.absoluteButton,
+    left,
+  };
+};
 
 export default styles;

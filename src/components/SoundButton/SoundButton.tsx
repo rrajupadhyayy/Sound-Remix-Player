@@ -3,10 +3,8 @@ import globalStyles from 'config/globalStyles';
 import useLoader from 'hooks/useLoader';
 import { useSoundPlayer, loadSound } from 'hooks/useSoundPlayer';
 import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { SoundFileNames, downloadLinks } from 'services/download.constants';
-import { getScreenWidth } from 'utils/screen-size';
-import styles from './SoundButton.styles';
+import { TouchableOpacity } from 'react-native';
+import styles, { generateAbsoluteStyle } from './SoundButton.styles';
 import {
   commonDraggableProps,
   commonProgressProps,
@@ -15,15 +13,20 @@ import {
   soundIconSize,
 } from './SoundButton.utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Icons } from 'config/icons';
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
+import { SoundButtonProps } from './SoundButton.types';
 
-function SoundButton() {
+function SoundButton({
+  fileName,
+  downloadLink,
+  distanceFromLeft,
+  iconName,
+}: SoundButtonProps) {
   const [isInDefaultPosition, setIsInDefault] = useState(true);
   const { loaderFunction } = useLoader();
-  const { whoosh, loadingPercentage, setLoadingPercentage } = loadSound({
-    fileName: SoundFileNames.RAIN,
-    downloadLink: downloadLinks.rain,
+  const { whoosh, loadingPercentage } = loadSound({
+    fileName,
+    downloadLink,
     loaderFunction,
   });
 
@@ -53,10 +56,10 @@ function SoundButton() {
     }
   };
 
-  const iconComponent = (name: Icons) => {
+  const iconComponent = () => {
     return (
       <Icon
-        name={name}
+        name={iconName}
         color={getSoundIconColor(isInDefaultPosition)}
         size={soundIconSize}
       />
@@ -70,37 +73,36 @@ function SoundButton() {
           globalStyles.alignCenter,
           styles.buttonContainer,
           globalStyles.boxShadow,
-          isInDefaultPosition && styles.absoluteButton,
+          isInDefaultPosition && generateAbsoluteStyle(distanceFromLeft),
         ]}
         onPress={isInDefaultPosition ? onPlay : onStop}
       >
         {isInDefaultPosition ? (
           <CircularProgressBase
+            key={fileName}
             initialValue={loadingPercentage}
             value={loadingPercentage}
             {...commonProgressProps}
           >
-            {iconComponent(Icons.WATER)}
+            {iconComponent()}
           </CircularProgressBase>
         ) : (
-          iconComponent(Icons.WATER)
+          iconComponent()
         )}
       </TouchableOpacity>
     );
   };
 
   return !isInDefaultPosition ? (
-    <View style={[globalStyles.container]}>
-      <Draggable
-        {...commonDraggableProps}
-        x={getScreenWidth(4)}
-        disabled={isInDefaultPosition}
-        onDragRelease={handleDrag}
-        onInitialLayout={handleDrag}
-      >
-        {touchableComponent()}
-      </Draggable>
-    </View>
+    <Draggable
+      {...commonDraggableProps}
+      x={distanceFromLeft}
+      disabled={isInDefaultPosition}
+      onDragRelease={handleDrag}
+      onInitialLayout={handleDrag}
+    >
+      {touchableComponent()}
+    </Draggable>
   ) : (
     touchableComponent()
   );
