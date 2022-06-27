@@ -4,7 +4,6 @@ import { getScreenHeight, getScreenWidth } from 'utils/screen-size';
 import { SoundButtonProps, SoundFileNames } from './SoundButton.types';
 
 // some common props and constants defined
-export const defaultSpacingBetweenButtons = getScreenWidth(4);
 export const defaultButtonSize = getScreenWidth(19);
 
 export const commonDraggableProps = {
@@ -76,8 +75,14 @@ const soundArray = [
 
 // function to generate x co ordinates for the sound buttons to be displayed
 export const generateSoundDisplayArray = () => {
+  const totalWidthOfButtons = defaultButtonSize * soundArray.length;
+  const remainingTotalSpace = getScreenWidth(100) - totalWidthOfButtons;
+  const defaultSpacingBetweenButtons = Math.round(
+    remainingTotalSpace / (soundArray.length + 1),
+  );
+
   const soundButtonDisplayArray = [];
-  for (let index = 1; index < 5; index++) {
+  for (let index = 1; index < soundArray.length + 1; index++) {
     const element: SoundButtonProps = {
       ...soundArray[index - 1],
       distanceFromLeft:
