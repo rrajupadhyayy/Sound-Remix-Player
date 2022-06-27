@@ -7,7 +7,6 @@ import { SoundButtonProps, SoundFileNames } from './SoundButton.types';
 export const defaultButtonSize = getScreenWidth(19);
 
 export const commonDraggableProps = {
-  y: getScreenHeight(70),
   maxY: getScreenHeight(70),
   minY: getScreenHeight(10),
 };
@@ -33,16 +32,18 @@ export const generateAudioRanges = () => {
   const maximumRange = getScreenHeight(60);
   const minimumRange = getScreenHeight(6);
   const rangeArray = [];
+  let volume = 1;
   for (let index = 1; index < 10; index++) {
     const element = {
-      volume: Number(`0.${index}`),
+      volume,
       minLimit: minimumRange * (index - 1),
       maxLimit: minimumRange * index,
     };
     rangeArray.push(element);
+    volume = volume - 0.1;
   }
   rangeArray.push({
-    volume: 1,
+    volume,
     minLimit: maximumRange - minimumRange,
     maxLimit: maximumRange + getScreenHeight(10),
     // Adding extra limit just incase some miscalculation from panresponder to the upper limit
@@ -83,7 +84,7 @@ export const generateSoundDisplayArray = () => {
 
   const soundButtonDisplayArray = [];
   for (let index = 1; index < soundArray.length + 1; index++) {
-    const element: SoundButtonProps = {
+    const element = {
       ...soundArray[index - 1],
       distanceFromLeft:
         defaultSpacingBetweenButtons * index + defaultButtonSize * (index - 1),

@@ -17,6 +17,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import { SoundButtonProps } from './SoundButton.types';
+import { getScreenHeight } from 'utils/screen-size';
 
 // Initialzing outside the render function to avoid unecessary recalculation
 const rangeArray = generateAudioRanges();
@@ -26,6 +27,9 @@ function SoundButton({
   downloadLink,
   distanceFromLeft,
   iconName,
+  setSoundStatusToTrue,
+  setSoundStatusToFalse,
+  isSoundPlaying,
 }: SoundButtonProps) {
   const [isInDefaultPosition, setIsInDefault] = useState<boolean>(true);
   // state to toggle between sound playing/stopped state
@@ -40,13 +44,16 @@ function SoundButton({
 
   const { playSound, stopSound, setSoundVolume } = useSoundPlayer(soundRef);
   // initialize sound methds
+  const [yStartCords, setYStartCords] = useState<number>(getScreenHeight(10));
 
-  const onPlay = () => {
+  const onPlay = async () => {
+    setSoundStatusToTrue({ fileName, setYStartCords });
     setIsInDefault(false);
     playSound();
   };
 
   const onStop = () => {
+    setSoundStatusToFalse({ fileName, setYStartCords });
     setIsInDefault(true);
     stopSound();
   };
@@ -54,8 +61,8 @@ function SoundButton({
   // function check if the component position lies between one of the range values
   const handleDrag = (position?: string) => {
     if (position) {
-      const top = Number(position) !== 0 ? Number(position) * -1 : 0;
-      let volume = 0.1;
+      const top = Number(position);
+      let volume = isSoundPlaying ? 0.5 : 1;
       rangeArray.forEach((item) => {
         if (item.minLimit <= top && top < item.maxLimit) {
           volume = item.volume;
@@ -113,6 +120,7 @@ function SoundButton({
   return !isInDefaultPosition ? (
     <Draggable
       {...commonDraggableProps}
+      y={yStartCords}
       x={distanceFromLeft}
       disabled={isInDefaultPosition}
       onDragRelease={handleDrag}

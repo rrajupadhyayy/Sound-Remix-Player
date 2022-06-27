@@ -7,13 +7,22 @@ import {
   staticText,
   typography,
 } from 'config';
-import React from 'react';
+import React, { useState } from 'react';
 import { Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { SoundFileNames } from 'components/SoundButton/SoundButton.types';
+import { useSoundPlayStatus } from 'hooks/useSoundPlayStatus';
 
 function HomePage() {
   useNetInfo();
   const soundButtonDisplayArray = generateSoundDisplayArray();
+  const {
+    soundPlayStatus,
+    setSoundStatusToFalse,
+    setSoundStatusToTrue,
+    isSoundPlaying,
+  } = useSoundPlayStatus();
+
   return (
     <LinearGradient
       style={[
@@ -33,6 +42,10 @@ function HomePage() {
             downloadLink={downloadLink}
             distanceFromLeft={distanceFromLeft}
             iconName={iconName}
+            soundPlayStatus={soundPlayStatus}
+            setSoundStatusToFalse={setSoundStatusToFalse}
+            setSoundStatusToTrue={setSoundStatusToTrue}
+            isSoundPlaying={isSoundPlaying}
           />
         );
       })}

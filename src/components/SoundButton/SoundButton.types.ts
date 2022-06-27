@@ -1,4 +1,5 @@
 import { Icons } from 'config';
+import { SoundStatusChangeProps } from 'hooks/useSoundPlayStatus';
 
 export enum SoundFileNames {
   RAIN = 'rain',
@@ -12,4 +13,14 @@ export interface SoundButtonProps {
   downloadLink: string;
   distanceFromLeft: number;
   iconName: Icons;
+  soundPlayStatus: Record<string, boolean>;
+  setSoundStatusToTrue: ({
+    fileName,
+    setYStartCords,
+  }: SoundStatusChangeProps) => void;
+  setSoundStatusToFalse: ({
+    fileName,
+    setYStartCords,
+  }: SoundStatusChangeProps) => void;
+  isSoundPlaying: boolean;
 }

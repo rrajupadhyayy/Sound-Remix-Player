@@ -85,7 +85,6 @@ export const useSoundPlayer = (soundRef: any) => {
         // to keep infinite loop
         soundRef.setNumberOfLoops(-1);
         soundRef.play();
-        soundRef.setVolume(0.1);
       });
     };
 
@@ -96,6 +95,7 @@ export const useSoundPlayer = (soundRef: any) => {
     function setSoundVolume(volume: number) {
       useTryCatch(() => {
         const currentVolume = soundRef.getVolume();
+        console.log({ currentVolume });
         if (currentVolume !== volume) {
           // update volume only when current volume and volume updated from drag are different
           soundRef.setVolume(volume);
